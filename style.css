@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+#airport-list {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.country-section {
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.country-section:hover {
+  background-color: #eef;
+  border-radius: 4px;
+}
+
+.airport-list {
+  display: none;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding-left: 20px;
+  border-left: 3px solid #333;
+}
+
+.airport-item {
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.airport-item:hover {
+  background-color: #f1f1f1;
+}
+
+.airport-item strong {
+  color: black;
+}
+
+.airport-item em {
+  color: #777;
+  font-size: 0.9rem;
+}
