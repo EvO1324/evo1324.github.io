@@ -37,25 +37,19 @@
       try {
         const res = await fetch("./flights.json");
         const flightsData = await res.json();
-
-        // Extract coordinates for heatmap
         const coords = flightsData.map(f => [f.lat, f.lon]);
         heatLayer.setLatLngs(coords);
-
       } catch (err) {
         console.error("Failed to load flights.json:", err);
       }
     }
 
-    // Save map position & zoom
     map.on("moveend zoomend", () => {
       const center = map.getCenter();
       localStorage.setItem("mapView", JSON.stringify({ lat: center.lat, lng: center.lng, zoom: map.getZoom() }));
     });
 
-    // Initial load and refresh every 2 minutes
-    loadFlights();
-    setInterval(loadFlights, 2 * 60 * 1000);
+    loadFlights(); // Initial load
   </script>
 </body>
 </html>
