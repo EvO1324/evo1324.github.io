@@ -1,1 +1,61 @@
-hello.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IF Expert Server Heatmap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    html, body, #map { 
+      height: 100%; 
+      margin: 0; 
+      padding: 0; 
+      background: #111; 
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+  <script>
+    const savedView = localStorage.getItem("mapView");
+    const initialLatLng = savedView ? [JSON.parse(savedView).lat, JSON.parse(savedView).lng] : [0, 0];
+    const initialZoom = savedView ? JSON.parse(savedView).zoom : 2;
+
+    const map = L.map('map').setView(initialLatLng, initialZoom);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    const heatLayer = L.heatLayer([], { radius: 4, blur: 4.5, maxZoom: 8 }).addTo(map);
+
+    async function loadFlights() {
+      try {
+        const res = await fetch("./flights.json");
+        const flightsData = await res.json();
+
+        // Extract coordinates for heatmap
+        const coords = flightsData.map(f => [f.lat, f.lon]);
+        heatLayer.setLatLngs(coords);
+
+      } catch (err) {
+        console.error("Failed to load flights.json:", err);
+      }
+    }
+
+    // Save map position & zoom
+    map.on("moveend zoomend", () => {
+      const center = map.getCenter();
+      localStorage.setItem("mapView", JSON.stringify({ lat: center.lat, lng: center.lng, zoom: map.getZoom() }));
+    });
+
+    // Initial load and refresh every 2 minutes
+    loadFlights();
+    setInterval(loadFlights, 2 * 60 * 1000);
+  </script>
+</body>
+</html>
