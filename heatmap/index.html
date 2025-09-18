@@ -20,6 +20,7 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
   <script>
+    // Restore previous map view or default
     const savedView = localStorage.getItem("mapView");
     const initialLatLng = savedView ? [JSON.parse(savedView).lat, JSON.parse(savedView).lng] : [0, 0];
     const initialZoom = savedView ? JSON.parse(savedView).zoom : 2;
@@ -35,7 +36,8 @@
 
     async function loadFlights() {
       try {
-        const res = await fetch("./flights.json");
+        // Add cache-buster to prevent GitHub Pages caching
+        const res = await fetch("./flights.json?cb=" + Date.now());
         const flightsData = await res.json();
         const coords = flightsData.map(f => [f.lat, f.lon]);
         heatLayer.setLatLngs(coords);
@@ -44,12 +46,14 @@
       }
     }
 
+    // Save map position & zoom
     map.on("moveend zoomend", () => {
       const center = map.getCenter();
       localStorage.setItem("mapView", JSON.stringify({ lat: center.lat, lng: center.lng, zoom: map.getZoom() }));
     });
 
-    loadFlights(); // Initial load
+    // Initial load
+    loadFlights();
   </script>
 </body>
 </html>
